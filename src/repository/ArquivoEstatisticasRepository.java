@@ -1,18 +1,18 @@
 package repository;
 
-import persistence.ArmazenamentoArquivo;
-import persistence.PersistenciaException;
-import persistence.RegistroPartida;
-
 import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.io.Writer;
 import java.nio.file.Path;
 import java.util.ArrayList;
+import java.util.Comparator;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
+import persistence.ArmazenamentoArquivo;
+import persistence.PersistenciaException;
+import persistence.RegistroPartida;
 
 /**
  * Implementação de {@link EstatisticasRepository} que guarda todo o
@@ -29,11 +29,17 @@ public class ArquivoEstatisticasRepository implements EstatisticasRepository {
         ArmazenamentoArquivo.adicionarALista(registro, ARQUIVO, RegistroPartida.class);
     }
 
-    @Override
+        @Override
     public List<RegistroPartida> listarHistorico(String perfil) throws PersistenciaException {
-        return todos().stream()
+        List<RegistroPartida> historico = todos().stream()
                 .filter(r -> r.getPerfil().equals(perfil))
                 .collect(Collectors.toList());
+
+        // Mais recente primeiro. Usa Comparator sobre a data/hora — não
+        // reaproveita ordenarPorTempo porque aquele método ordena pelo
+        // TEMPO DE PARTIDA (usado só pelo ranking), critério diferente.
+        historico.sort(Comparator.comparing(RegistroPartida::getDataHora).reversed());
+        return historico;
     }
 
     @Override

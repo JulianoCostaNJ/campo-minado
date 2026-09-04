@@ -1,4 +1,5 @@
 import model.RegrasJogo;
+import model.RegraJogoException;
 import model.Tabuleiro;
 import org.junit.jupiter.api.Test;
 import static org.junit.jupiter.api.Assertions.*;
@@ -35,7 +36,13 @@ public class CampoMinadoTest {
         // A própria célula minada não conta a si mesma.
         assertEquals(0, tabuleiro.getCelula(1, 1).getMinasVizinhas());
     }
-
+    @Test
+    void testTabuleiroRejeitaQuantidadeDeMinasInvalida() {
+        // 9 minas num tabuleiro 3x3 (9 células) é uma regra de jogo
+        // violada: não sobraria nenhuma célula segura.
+        assertThrows(RegraJogoException.class, () -> new Tabuleiro(3, 3, 9));
+    }
+    
     @Test
     void testContagemDeMinasVizinhasComDuasMinasAdjacentes() {
         // Duas minas lado a lado: a célula (0,2) tem ambas como vizinhas.
@@ -331,6 +338,6 @@ public class CampoMinadoTest {
 
     @Test
     void testBuilderNaoAceitaMenosDeUmaVida() {
-        assertThrows(IllegalArgumentException.class, () -> RegrasJogo.construir().comVidas(0));
+        assertThrows(RegraJogoException.class, () -> RegrasJogo.construir().comVidas(0));
     }
 }

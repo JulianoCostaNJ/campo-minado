@@ -6,12 +6,18 @@ import audio.ServicoMusica;
 import audio.ServicoMusicaClip;
 import audio.ServicoSom;
 import audio.ServicoSomClip;
+import java.io.File;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Optional;
+import javax.swing.Timer;
 import model.ModoJogadores;
+import model.RegraJogoException;
 import model.RegrasJogo;
 import model.Tabuleiro;
 import persistence.Configuracoes;
-import persistence.PersistenciaException;
 import persistence.Perfil;
+import persistence.PersistenciaException;
 import persistence.RegistroPartida;
 import persistence.SaveGame;
 import repository.ArquivoConfiguracoesRepository;
@@ -30,12 +36,6 @@ import service.GravadorJogadas;
 import service.Jogada;
 import service.TipoJogada;
 import view.CampoMinadoView;
-
-import javax.swing.Timer;
-import java.io.File;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Optional;
 
 /**
  * CONTROLLER da arquitetura MVC: é o único ponto que conhece tanto o
@@ -213,8 +213,17 @@ public class CampoMinadoController implements AcoesJogador {
     }
 
     private void iniciarPartida(ConfiguracaoPartida configuracao) {
-        this.tabuleiro = new Tabuleiro(configuracao.getLinhas(), configuracao.getColunas(),
-                configuracao.getMinas(), configuracao.getRegras());
+        
+        Tabuleiro novoTabuleiro;
+        try {
+            novoTabuleiro = new Tabuleiro(configuracao.getLinhas(), configuracao.getColunas(),
+                    configuracao.getMinas(), configuracao.getRegras());
+        } catch (RegraJogoException e) {
+            view.mostrarMensagem("Não foi possível iniciar a partida: " + e.getMessage());
+            mostrarTelaInicialAtualizada();
+            return;
+        }
+        this.tabuleiro = novoTabuleiro;
         this.linhasPartidaAtual = configuracao.getLinhas();
         this.colunasPartidaAtual = configuracao.getColunas();
         this.totalMinas = configuracao.getMinas();

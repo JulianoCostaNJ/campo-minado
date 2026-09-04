@@ -115,7 +115,7 @@ public final class RegrasJogo implements Serializable {
         /** Modo "3 vidas" (ou qualquer número > 1): tolera múltiplos cliques em mina. */
         public Builder comVidas(int vidas) {
             if (vidas < 1) {
-                throw new IllegalArgumentException("O jogo precisa de pelo menos 1 vida.");
+                throw new RegraJogoException("O jogo precisa de pelo menos 1 vida.");
             }
             this.vidasIniciais = vidas;
             return this;

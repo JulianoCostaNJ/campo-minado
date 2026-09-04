@@ -55,10 +55,10 @@ public class Tabuleiro implements LeituraTabuleiro, Serializable {
      */
     public Tabuleiro(int linhas, int colunas, int numMinas, RegrasJogo regras) {
         if (linhas <= 0 || colunas <= 0) {
-            throw new IllegalArgumentException("Linhas e colunas devem ser maiores que zero.");
+            throw new RegraJogoException("Linhas e colunas devem ser maiores que zero.");
         }
         if (numMinas < 0 || numMinas >= linhas * colunas) {
-            throw new IllegalArgumentException("Número de minas inválido para esse tabuleiro.");
+            throw new RegraJogoException("Número de minas inválido para esse tabuleiro.");
         }
 
         this.linhas = linhas;
